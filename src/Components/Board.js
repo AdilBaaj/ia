@@ -21,9 +21,9 @@ class Board extends Component {
     for (let i = 0; i < boardSize; i++) {
       squares.push(this.renderSquare(i));
     }
-    let boardWidth = Constants.boardWidth * Constants.squareSideLength
+    let boardWidth = Constants.boardWidth * (Constants.squareSideLength + (Constants.squareBorderWidth * 2))
     boardWidth = String(boardWidth) + 'px'
-    let boardHeight = Constants.boardHeight * Constants.squareSideLength
+    let boardHeight = Constants.boardHeight * (Constants.squareSideLength + (Constants.squareBorderWidth * 2))
     boardHeight = String(boardWidth) + 'px'
 
     return (
@@ -31,7 +31,8 @@ class Board extends Component {
         width:  boardWidth,
         height: boardHeight,
         display: 'flex',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        border: 'black'
       }}>
         {squares}
       </div>
