@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask_restful import reqparse
+from game.fight import Game
 
 
 class SquareController(Resource):
@@ -19,16 +20,23 @@ class SquareController(Resource):
             parser.add_argument('species', type=str, help='Species')
 
             args = parser.parse_args()
-            x = args['x']
-            y = args['y']
-            nb = args['nb']
-            species = args['species']
+            xAttackedSquare = args['x']
+            yAttackedSquare = args['y']
+            nbAttackingSpecies = args['nb']
+            attackingSpecies = args['species']
 
-            square = Square(x, y, nb, species)
+            attackedSquare = db.session.query(Square).\
+                filter(Square.x==xAttackedSquare).\
+                filter(Square.y==yAttackedSquare).first()
+
+            game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
+            fightResult = game.fight()
+            print(fightResult)
+            square = Square(xAttackedSquare, yAttackedSquare, fightResult['nbWinningSpecies'], fightResult['winningSpecies'])
             db.session.add(square)
             db.session.commit()
 
-            return {'x': args['x'], 'y': args['y'], nb: args['nb'], species: args['species']}
+            return {'x': args['x'], 'y': args['y'], 'nb': args['nb'], 'species': args['species']}
 
         except Exception as e:
             db.session.rollback()

@@ -1,4 +1,4 @@
-import constants
+import game.constants as constants
 from numpy.random import binomial
 
 class Game:
@@ -11,14 +11,14 @@ class Game:
     def __init__(self, attackingSpecies, attackedSpecies, nbAttackingSpecies, nbAttackedSpecies):
         self.attackingSpecies = attackingSpecies
         self.attackedSpecies = attackedSpecies
-        self.nbAttackingSpecies = nbAttackingSpecies
-        self.nbAttackedSpecies = nbAttackedSpecies
+        self.nbAttackingSpecies = float(nbAttackingSpecies)
+        self.nbAttackedSpecies = float(nbAttackedSpecies)
 
     def fightVsHuman(self):
         if self.nbAttackedSpecies < self.nbAttackingSpecies:
-            fightResult['winningSpecies'] = self.attackingSpecies
-            fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
-            return fightResult
+            self.fightResult['winningSpecies'] = self.attackingSpecies
+            self.fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
+            return self.fightResult
         else:
             if binomial(1, winProbability) == 1:
                 winProbability = self.nbAttackingSpecies / ( 2  * self.nbAttackedSpecies)
@@ -28,23 +28,23 @@ class Game:
                     nbAttackingSpeciesSurvivors += binomial(1, winProbability)
                 for i in range(self.nbAttackedSpecies):
                     nbHumanConverted += binomial(1, winProbability)
-                fightResult['winningSpecies'] = self.attackingSpecies
-                fightResult['nbWinningSpecies'] = nbAttackingSpeciesSurvivors + nbHumanConverted
-                return fightResult
+                self.fightResult['winningSpecies'] = self.attackingSpecies
+                self.fightResult['nbWinningSpecies'] = nbAttackingSpeciesSurvivors + nbHumanConverted
+                return self.fightResult
             else:
                 survivalProbability = 1 - (self.nbAttackingSpecies / ( 2  * self.nbAttackedSpecies))
                 nbHumanSurvivors = 0
                 for i in range(self.nbAttackedSpecies):
                     nbHumanSurvivors += binomial(1, survivalProbability)
-                fightResult['winningSpecies'] = self.attackedSpecies
-                fightResult['nbWinningSpecies'] = nbHumanSurvivors
-                return fightResult
+                self.fightResult['winningSpecies'] = self.attackedSpecies
+                self.fightResult['nbWinningSpecies'] = nbHumanSurvivors
+                return self.fightResult
 
     def fightVsMonsters(self):
         if self.nbAttackedSpecies < 1.5 * self.nbAttackingSpecies:
-            fightResult['winningSpecies'] = self.attackingSpecies
-            fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
-            return fightResult
+            self.fightResult['winningSpecies'] = self.attackingSpecies
+            self.fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
+            return self.fightResult
         else:
             winProbability = self.nbAttackingSpecies / ( 2  * self.nbAttackedSpecies)
             if 1.5 * self.nbAttackingSpecies <= self.nbAttackedSpecies <= self.nbAttackingSpecies:
@@ -53,17 +53,17 @@ class Game:
                 nbAttackingSpeciesSurvivors = 0
                 for i in range(self.nbAttackingSpecies):
                     nbAttackingSpeciesSurvivors += binomial(1, winProbability)
-                fightResult['winningSpecies'] = self.attackingSpecies
-                fightResult['nbWinningSpecies'] = nbAttackingSpeciesSurvivors
-                return fightResult
+                self.fightResult['winningSpecies'] = self.attackingSpecies
+                self.fightResult['nbWinningSpecies'] = nbAttackingSpeciesSurvivors
+                return self.fightResult
             else:
                 survivalProbability = 1 - (self.nbAttackingSpecies / ( 2  * self.nbAttackedSpecies))
                 nbAttackedSpeciesSurvivors = 0
                 for i in range(self.nbAttackedSpecies):
                     nbAttackedSpeciesSurvivors += binomial(1, survivalProbability)
-                fightResult['winningSpecies'] = self.attackedSpecies
-                fightResult['nbWinningSpecies'] = nbAttackedSpeciesSurvivors
-                return fightResult
+                self.fightResult['winningSpecies'] = self.attackedSpecies
+                self.fightResult['nbWinningSpecies'] = nbAttackedSpeciesSurvivors
+                return self.fightResult
 
     def fight(self):
         if self.attackedSpecies == constants.EMPTY:
@@ -74,7 +74,6 @@ class Game:
             return self.fightVsHuman()
         else:
             return self.fightVsMonsters()
-
 
 class Grid:
     'Common base class for all employees'
@@ -87,12 +86,12 @@ class Grid:
         self.yGridSize = yGridSize
 
 class Square:
+    def __init__(self, species, nb ,x, y, case_id):
+        self.species = species
+        self.nb = nb
+        self.x = x
+        self.y = y
+        self.index = int(str(x)+str(y))
 
-    def __init__(self,species,nb,x,y,case_id):
-		self.species = species
-		self.nb = nb
-		self.x = x
-		self.y = y
-		self.index = int(str(x)+str(y))
     def __repr__(self):
         return str([self.species,self.nb,self.x,self.y,self.index])
