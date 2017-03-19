@@ -6,9 +6,9 @@ new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
   hot: true,
   historyApiFallback: true
-}).listen(5000, 'localhost', (err) => {
+}).listen(8080, 'localhost', (err) => {
   if (err) {
     console.log(err);
   }
-  console.log('Listening at localhost:5000');
+  console.log('Listening at localhost:8080');
 });

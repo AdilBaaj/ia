@@ -49,7 +49,7 @@ const path = require('path');
 
 module.exports = {
   entry: [
-    'webpack-dev-server/client?http://localhost:5000',
+    'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/dev-server',
     './src/index'
   ],

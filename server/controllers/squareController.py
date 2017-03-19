@@ -1,12 +1,21 @@
 from flask_restful import Resource
 from flask_restful import reqparse
 from game.fight import Game
-
+import simplejson as json
 
 class SquareController(Resource):
 
     def get(self):
-        return {"response" : "hello get"}
+        from api import db
+        from models import Square
+        square = Square.query.first()
+        hydratedSquare = {
+            'x': square.x,
+            'y': square.y,
+            'nb': square.nb,
+            'species': square.species
+        }
+        return hydratedSquare
 
     def post(self):
         from api import db
