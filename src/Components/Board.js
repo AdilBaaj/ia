@@ -3,8 +3,28 @@ import Square from './Square';
 import * as Constants from './Constants';
 
 class Board extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {}
+    };
+  }
+
   renderSquare(i) {
     const black = (i % 2 === 0);
+    if (typeof this.props.data.nb === 'number') {
+      if (this.props.data.x === (i % 15) && this.props.data.y === Math.floor(i / 15)) {
+        console.log(this.props.data)
+        return (
+          <div key={i}>
+            <Square
+              black={black}
+              data={this.props.data}
+            />
+          </div>
+        );
+      }
+    }
     return (
       <div key={i}>
         <Square
@@ -25,7 +45,6 @@ class Board extends Component {
     boardWidth = String(boardWidth) + 'px';
     let boardHeight = Constants.boardHeight * (Constants.squareSideLength + (Constants.squareBorderWidth * 2));
     boardHeight = String(boardWidth) + 'px';
-
     return (
       <div
         style={{
@@ -44,7 +63,8 @@ class Board extends Component {
 
 Board.propTypes = {
   boardWidth: PropTypes.number,
-  boardHeight: PropTypes.number
+  boardHeight: PropTypes.number,
+  data: PropTypes.object
 };
 
 export default Board;

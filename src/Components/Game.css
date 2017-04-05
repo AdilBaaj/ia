@@ -1,0 +1,10 @@
+.request-data-button {
+  background-color: #4CAF50;
+  border: none;
+  margin-bottom: 10px;
+  color: white;
+  text-align: center;
+  width: 100px;
+  height: 40px;
+  cursor: pointer;
+}

@@ -3,31 +3,59 @@ import * as Constants from './Constants';
 import './Square.css';
 
 export default class Square extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {},
+      value: ''
+    };
+  }
+
+  setValue = (event) => {
+    this.setState({
+      value: event.target.value
+    });
+  }
+
+  resetValue = () => {
+    this.setState({
+      value: ''
+    });
+  }
+
   render() {
-    const vampiresColor = '#0052cc';
-    const humanColor = '#ce9613';
-    const werewolvesColor = '#00802b';
     let backgroundColor = '#52527a';
 
-    if (this.props.species === 'vampires') {
-      backgroundColor = vampiresColor;
-    } else if (this.props.species === 'werewolves') {
-      backgroundColor = werewolvesColor;
-    } else if (this.props.species === 'human') {
-      backgroundColor = humanColor;
+    if (this.props.data && this.props.data.species) {
+      const species = Constants.species[this.props.data.species];
+      if (species === 'vampires') {
+        backgroundColor = Constants.vampiresColor;
+      } else if (species === 'werewolves') {
+        backgroundColor = Constants.werewolvesColor;
+      } else {
+        backgroundColor = Constants.humanColor;
+      }
+    }
+
+    let defaultValue = '';
+    if (this.props.data && this.props.data.nb) {
+      defaultValue = this.props.data.nb;
     }
 
     return (
       <div className="square">
         <input
+          placeholder={defaultValue}
+          value={this.state.value}
           style={{
             backgroundColor: backgroundColor,
             width: Constants.squareSideLength,
             height: Constants.squareSideLength,
             border: `${Constants.squareBorderWidth}px solid`,
             padding: '0',
-            color: 'black'
+            color: 'black',
           }}
+          onChange={this.setValue}
         />
       </div>
     );
@@ -35,5 +63,6 @@ export default class Square extends Component {
 }
 
 Square.propTypes = {
-  species: PropTypes.string
+  data: PropTypes.object,
+  shouldResetValue: PropTypes.bool
 };
