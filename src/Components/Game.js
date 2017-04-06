@@ -6,7 +6,7 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: {}
+      data: []
     };
   }
 
@@ -15,7 +15,6 @@ class Game extends Component {
     .then(response => response.json())
     .then((json) => {
       json.shouldResetValue = true;
-      console.log(json);
       this.setState({ data: json });
       return json;
     });
@@ -24,12 +23,20 @@ class Game extends Component {
   render() {
     return (
       <div>
-        <button
-          onClick={this.getInitialBoard}
-          className="request-data-button"
-        >
-          {'Request new board state'}
-        </button>
+        <div className="buttons">
+          <button
+            onClick={this.getInitialBoard}
+            className="request-data-button"
+          >
+            {'Request new board state'}
+          </button>
+          <button
+            onClick={this.getInitialBoard}
+            className="send-data-button"
+          >
+            {'Send data'}
+          </button>
+        </div>
         <Board data={this.state.data} />
       </div>
     );

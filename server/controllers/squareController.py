@@ -8,14 +8,17 @@ class SquareController(Resource):
     def get(self):
         from api import db
         from models import Square
-        square = Square.query.first()
-        hydratedSquare = {
-            'x': square.x,
-            'y': square.y,
-            'nb': square.nb,
-            'species': square.species
-        }
-        return hydratedSquare
+        squares = Square.query.all()
+        hydratedSquares = []
+        for square in squares:
+            hydratedSquare = {
+                'x': square.x,
+                'y': square.y,
+                'nb': square.nb,
+                'species': square.species
+            }
+            hydratedSquares.append(hydratedSquare)
+        return hydratedSquares
 
     def post(self):
         from api import db
@@ -33,12 +36,17 @@ class SquareController(Resource):
             yAttackedSquare = args['y']
             nbAttackingSpecies = args['nb']
             attackingSpecies = args['species']
+            print(args)
 
             attackedSquare = db.session.query(Square).\
                 filter(Square.x==xAttackedSquare).\
                 filter(Square.y==yAttackedSquare).first()
+            if attackedSquare is None:
+                attackedSquare = {}
+                attackedSquare['species'] = None
+                attackedSquare['nb'] = None
 
-            game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
+            game = Game(attackingSpecies, attackedSquare['species'], nbAttackingSpecies, attackedSquare['nb'])
             fightResult = game.fight()
             print(fightResult)
             square = Square(xAttackedSquare, yAttackedSquare, fightResult['nbWinningSpecies'], fightResult['winningSpecies'])

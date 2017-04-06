@@ -10,9 +10,11 @@ class Game:
 
     def __init__(self, attackingSpecies, attackedSpecies, nbAttackingSpecies, nbAttackedSpecies):
         self.attackingSpecies = attackingSpecies
-        self.attackedSpecies = attackedSpecies
         self.nbAttackingSpecies = float(nbAttackingSpecies)
-        self.nbAttackedSpecies = float(nbAttackedSpecies)
+        if attackedSpecies is not None:
+            self.attackedSpecies = attackedSpecies
+            self.nbAttackedSpecies = float(nbAttackedSpecies)
+
 
     def fightVsHuman(self):
         if self.nbAttackedSpecies < self.nbAttackingSpecies:

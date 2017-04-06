@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import * as _ from 'lodash';
 import Square from './Square';
 import * as Constants from './Constants';
 
@@ -12,14 +13,15 @@ class Board extends Component {
 
   renderSquare(i) {
     const black = (i % 2 === 0);
-    if (typeof this.props.data.nb === 'number') {
-      if (this.props.data.x === (i % 15) && this.props.data.y === Math.floor(i / 15)) {
-        console.log(this.props.data)
+    const squares = this.props.data;
+    for (let j = 0; j < squares.length; j++) {
+      const square = squares[j]
+      if (square !== undefined && square.x === (i % 15) && square.y === Math.floor(i / 15)) {
         return (
           <div key={i}>
             <Square
               black={black}
-              data={this.props.data}
+              data={square}
             />
           </div>
         );
@@ -64,7 +66,7 @@ class Board extends Component {
 Board.propTypes = {
   boardWidth: PropTypes.number,
   boardHeight: PropTypes.number,
-  data: PropTypes.object
+  data: PropTypes.array
 };
 
 export default Board;
