@@ -21,6 +21,20 @@ class Square(db.Model):
             species = constants.MAP_SPECIES[self.species]
             return '<{} {} at position (x: {}, y:{})>'.format(self.nb, species, self.x, self.y)
 
+
+class PlayerTurn(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    turn = db.Column(db.Boolean, nullable=False, default=True)
+
+    def __init__(self, turn):
+        self.turn = turn
+
+    def __repr__(self):
+        if self.turn == True:
+            return '<{} turn>'.format(constants.MAP_SPECIES[str(constants.VAMPIRE)])
+        else :
+            return '<{} turn>'.format(constants.MAP_SPECIES[str(constants.WEREWOLF)])
+
 if __name__ == '__main__':
     db.create_all()
     db.session.commit()

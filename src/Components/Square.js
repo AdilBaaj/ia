@@ -15,6 +15,14 @@ export default class Square extends Component {
     this.setState({
       value: event.target.value
     });
+
+    const squareData = {
+      x: this.props.data.x,
+      y: this.props.data.y,
+      species: this.props.data.species,
+      nb: event.target.value
+    };
+    this.props.sendData(squareData);
   }
 
   resetValue = () => {
@@ -64,5 +72,7 @@ export default class Square extends Component {
 
 Square.propTypes = {
   data: PropTypes.object,
-  shouldResetValue: PropTypes.bool
+  shouldResetValue: PropTypes.bool,
+  value: PropTypes.string,
+  sendData: PropTypes.func
 };

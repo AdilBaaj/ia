@@ -26,17 +26,23 @@ class SquareController(Resource):
         try:
             # Parse the arguments
             parser = reqparse.RequestParser()
+            print(parser.__dict__)
             parser.add_argument('x', type=str, help='x')
             parser.add_argument('y', type=str, help='y')
             parser.add_argument('nb', type=str, help='Number')
             parser.add_argument('species', type=str, help='Species')
 
             args = parser.parse_args()
+            print(args)
             xAttackedSquare = args['x']
             yAttackedSquare = args['y']
             nbAttackingSpecies = args['nb']
             attackingSpecies = args['species']
-            print(args)
+
+            print(xAttackedSquare)
+            print(yAttackedSquare)
+            print(nbAttackingSpecies)
+            print(attackingSpecies)
 
             attackedSquare = db.session.query(Square).\
                 filter(Square.x==xAttackedSquare).\
@@ -45,6 +51,11 @@ class SquareController(Resource):
                 attackedSquare = {}
                 attackedSquare['species'] = None
                 attackedSquare['nb'] = None
+            elif attackedSquare.species == attackingSpecies:
+                attackedSquare.nb = int(nbAttackingSpecies) + int(attackedSquare.nb)
+                db.session.commit()
+
+                return {'x':args['x'], 'y': args['y'], 'nb': attackedSquare.nb, 'species': attackingSpecies}
 
             game = Game(attackingSpecies, attackedSquare['species'], nbAttackingSpecies, attackedSquare['nb'])
             fightResult = game.fight()
