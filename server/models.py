@@ -5,7 +5,7 @@ class Square(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     x = db.Column(db.Integer, nullable=False, default=1)
     y = db.Column(db.Integer, nullable=False, default=1)
-    nb = db.Column(db.Integer, nullable=False, default=0)
+    nb = db.Column(db.Integer, nullable=True, default=0)
     species = db.Column(db.Integer, nullable=False, default=0)
 
     def __init__(self, x, y, nb, species):
@@ -18,7 +18,7 @@ class Square(db.Model):
         if self.species == constants.EMPTY:
             return 'Empty Square at position (x: {}, y: {})'.format(self.x, self.y)
         else :
-            species = constants.MAP_SPECIES[self.species]
+            species = constants.MAP_SPECIES[int(self.species)]
             return '<{} {} at position (x: {}, y:{})>'.format(self.nb, species, self.x, self.y)
 
 
@@ -31,9 +31,9 @@ class PlayerTurn(db.Model):
 
     def __repr__(self):
         if self.turn == True:
-            return '<{} turn>'.format(constants.MAP_SPECIES[str(constants.VAMPIRE)])
+            return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.VAMPIRE)])
         else :
-            return '<{} turn>'.format(constants.MAP_SPECIES[str(constants.WEREWOLF)])
+            return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.WEREWOLF)])
 
 if __name__ == '__main__':
     db.create_all()

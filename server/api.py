@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from controllers import squareController
+from controllers import squareController, partyController, playerTurnController
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -21,6 +21,8 @@ def after_request(response):
 db = SQLAlchemy(app)
 
 api.add_resource(squareController.SquareController, '/api/square')
+api.add_resource(partyController.PartyController, '/api/party')
+api.add_resource(playerTurnController.PlayerTurnController, '/api/turn')
 
 if __name__ == '__main__':
     app.run(debug=True)

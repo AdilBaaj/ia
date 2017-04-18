@@ -4,8 +4,8 @@ VAMPIRE=2
 WEREWOLF=3
 
 MAP_SPECIES = {
-    '0': 'EMPTY',
-    '1': 'HUMAN',
-    '2': 'VAMPIRE',
-    '3': 'WEREWOLF'
+    0: 'EMPTY',
+    1: 'HUMAN',
+    2: 'VAMPIRE',
+    3: 'WEREWOLF'
 }
