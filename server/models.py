@@ -1,6 +1,7 @@
 from api import db
 import game.constants as constants
 
+
 class Square(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     x = db.Column(db.Integer, nullable=False, default=1)
@@ -17,7 +18,7 @@ class Square(db.Model):
     def __repr__(self):
         if self.species == constants.EMPTY:
             return 'Empty Square at position (x: {}, y: {})'.format(self.x, self.y)
-        else :
+        else:
             species = constants.MAP_SPECIES[int(self.species)]
             return '<{} {} at position (x: {}, y:{})>'.format(self.nb, species, self.x, self.y)
 
@@ -30,10 +31,11 @@ class PlayerTurn(db.Model):
         self.turn = turn
 
     def __repr__(self):
-        if self.turn == True:
+        if self.turn:
             return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.VAMPIRE)])
-        else :
+        else:
             return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.WEREWOLF)])
+
 
 if __name__ == '__main__':
     db.create_all()

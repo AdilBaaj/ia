@@ -31,6 +31,8 @@
     "promise/no-native": 0,
     "react/jsx-no-bind": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
-    "react/prefer-stateless-function": "off"
+    "react/prefer-stateless-function": "off",
+    "no-plusplus": "off",
+    "arrow-body-style": ["error", "always"]
   }
 }

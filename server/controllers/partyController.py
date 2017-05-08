@@ -3,10 +3,11 @@ from flask_restful import reqparse
 from game.fight import Game
 import simplejson as json
 
+
 class PartyController(Resource):
 
     def get(self):
-        return {"response" : "hello get"}
+        return {"response": "hello get"}
 
     # Creates a new board
     def post(self):
@@ -15,7 +16,6 @@ class PartyController(Resource):
         from game import constants
         try:
             num_rows_deleted = db.session.query(Square).delete()
-            db.session.commit()
             boardHeight = 15
             boardWidth = 15
 
@@ -30,7 +30,7 @@ class PartyController(Resource):
             return {'error': str(e)}
 
     def put(self):
-        return {"response" : "hello put"}
+        return {"response": "hello put"}
 
     def delete(self):
-        return {"response" : "hello delete"}
+        return {"response": "hello delete"}

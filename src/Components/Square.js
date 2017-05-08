@@ -36,12 +36,14 @@ export default class Square extends Component {
 
     if (this.props.data && this.props.data.species) {
       const species = Constants.species[this.props.data.species];
-      if (species === 'vampires') {
+      if (species === 'VAMPIRE') {
         backgroundColor = Constants.vampiresColor;
-      } else if (species === 'werewolves') {
+      } else if (species === 'WEREWOLF') {
         backgroundColor = Constants.werewolvesColor;
-      } else {
+      } else if (species === 'HUMAN') {
         backgroundColor = Constants.humanColor;
+      } else {
+        backgroundColor = Constants.emptyColor;
       }
     }
 
@@ -56,7 +58,7 @@ export default class Square extends Component {
           placeholder={defaultValue}
           value={this.state.value}
           style={{
-            backgroundColor: backgroundColor,
+            backgroundColor,
             width: Constants.squareSideLength,
             height: Constants.squareSideLength,
             border: `${Constants.squareBorderWidth}px solid`,
@@ -72,7 +74,5 @@ export default class Square extends Component {
 
 Square.propTypes = {
   data: PropTypes.object,
-  shouldResetValue: PropTypes.bool,
-  value: PropTypes.string,
   sendData: PropTypes.func
 };

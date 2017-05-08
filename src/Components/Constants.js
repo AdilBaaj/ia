@@ -8,8 +8,15 @@ export const orangeColor = '#ffa500';
 export const vampiresColor = '#0052cc';
 export const humanColor = '#ce9613';
 export const werewolvesColor = '#00802b';
+export const emptyColor = '#00ff00';
 export const species = {
-  '1': 'human',
-  '2': 'vampires',
-  '3': 'werewolves'
-}
+  1: 'HUMAN',
+  2: 'VAMPIRE',
+  3: 'WEREWOLF'
+};
+
+export const revertDictSpecies = {
+  HUMAN: 1,
+  VAMPIRE: 2,
+  WEREWOLF: 3
+};

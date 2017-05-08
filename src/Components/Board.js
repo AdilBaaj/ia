@@ -10,45 +10,80 @@ class Board extends Component {
     this.state = {
       squares: [],
       data: [],
-      currentData: new Array(Constants.boardWidth * Constants.boardHeight)
+      currentData: new Array(Constants.boardWidth * Constants.boardHeight),
+      turn: ''
     };
   }
 
   componentWillMount() {
     const squares = [];
-    const boardSize = Constants.boardWidth * Constants.boardHeight
+    const boardSize = Constants.boardWidth * Constants.boardHeight;
     for (let i = 0; i < boardSize; i++) {
       squares.push(this.renderSquare(i));
     }
-    this.setState({ squares: squares });
+    this.setState({ squares });
+    this.getNewBoard();
+    this.fetchPlayerTurn();
   }
+
 
   getNewBoard = () => {
     return this.fetchData().then(() => {
       const squares = [];
-      const boardSize = Constants.boardWidth * Constants.boardHeight
+      const boardSize = Constants.boardWidth * Constants.boardHeight;
       for (let i = 0; i < boardSize; i++) {
         squares.push(this.renderSquare(i));
       }
-      this.setState({ squares: squares });
-      return "OK"
-    });
-  }
-
-
-  fetchData = () => {
-    return fetch('http://localhost:5000/api/square')
-    .then(response => response.json())
-    .then((json) => {
-      json.shouldResetValue = true;
-      this.setState({ data: json });
-      return json;
+      this.setState({ squares });
+      return 'OK';
     });
   }
 
   getUpdatedSquareData = (squareData) => {
     const index = squareData.x + (squareData.y * 15);
     this.state.currentData[index] = squareData;
+  }
+
+  sleep = (ms) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  fetchData = () => {
+    return fetch('http://localhost:5000/api/square')
+    .then((response) => {
+      return response.json();
+    })
+    .then((json) => {
+      this.setState({ data: json });
+      return json;
+    });
+  }
+
+  changePlayerTurn = () => {
+    return fetch('http://localhost:5000/api/turn', {
+      method: 'put',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: {}
+    })
+    .then(response => response.json())
+    .then((json) => {
+      this.setState({ turn: json.turn });
+      return this.state.turn;
+    });
+  }
+
+  fetchPlayerTurn = () => {
+    return fetch('http://localhost:5000/api/turn')
+    .then(response => response.json())
+    .then((json) => {
+      this.setState({ playerTurn: json.turn });
+      return json;
+    });
   }
 
   renderSquare(i) {
@@ -79,30 +114,30 @@ class Board extends Component {
   }
 
   sendUpdatedData = (data) => {
-
     // const myHeaders = new Headers();
-    return fetch('http://localhost:5000/api/square', {
-      method: 'post',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then((json) => {
-      json.shouldResetValue = true;
-      // this.setState({ data: json });
-      console.log(json)
-      return json;
+    return this.fetchPlayerTurn()
+    .then((playerPlaying) => {
+      data.species = Constants.revertDictSpecies[playerPlaying.turn];
+      return fetch('http://localhost:5000/api/square', {
+        method: 'post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
     });
   }
 
   sendAllUpdatedData = () => {
     const component = this
     const dataToSend = _.filter(this.state.currentData, function (o) { return o !== undefined; });
-    _.forEach(dataToSend, function(data) {
+    return Promise.all(_.forEach(dataToSend, function (data) {
       return component.sendUpdatedData(data);
+    }))
+    .then(() => {
+      // return this.getNewBoard()
+      return this.changePlayerTurn();
     });
   }
 
