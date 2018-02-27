@@ -10,7 +10,7 @@ class Game:
     fightResult = {}
 
     def __init__(self, attackingSpecies, attackedSpecies, nbAttackingSpecies, nbAttackedSpecies):
-        self.attackingSpecies = attackingSpecies
+        self.attackingSpecies = int(attackingSpecies)
         self.nbAttackingSpecies = float(nbAttackingSpecies)
         if attackedSpecies is not None:
             self.attackedSpecies = int(attackedSpecies)
@@ -18,8 +18,8 @@ class Game:
 
     def fightVsHuman(self):
         if self.nbAttackedSpecies < self.nbAttackingSpecies:
-            self.fightResult['winningSpecies'] = self.attackingSpecies
-            self.fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
+            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+            self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies + self.nbAttackedSpecies)
             return self.fightResult
         else:
             winProbability = self.nbAttackingSpecies / (2 * self.nbAttackedSpecies)
@@ -44,8 +44,8 @@ class Game:
 
     def fightVsMonsters(self):
         if 1.5 * self.nbAttackedSpecies < self.nbAttackingSpecies:
-            self.fightResult['winningSpecies'] = self.attackingSpecies
-            self.fightResult['nbWinningSpecies'] = self.nbAttackedSpecies + self.nbAttackedSpecies
+            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+            self.fightResult['nbWinningSpecies'] = int(self.nbAttackedSpecies + self.nbAttackedSpecies)
             return self.fightResult
         else:
             winProbability = self.nbAttackingSpecies / (2 * self.nbAttackedSpecies)
@@ -59,8 +59,8 @@ class Game:
                     self.fightResult['winningSpecies'] = constants.EMPTY
                     self.fightResult['nbWinningSpecies'] = 0
                     return self.fightResult
-                self.fightResult['winningSpecies'] = self.attackingSpecies
-                self.fightResult['nbWinningSpecies'] = nbAttackingSpeciesSurvivors
+                self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+                self.fightResult['nbWinningSpecies'] = int(nbAttackingSpeciesSurvivors)
                 return self.fightResult
             else:
                 survivalProbability = 1 - (self.nbAttackingSpecies / (2 * self.nbAttackedSpecies))
@@ -68,46 +68,23 @@ class Game:
                 for i in range(int(self.nbAttackedSpecies)):
                     nbAttackedSpeciesSurvivors += binomial(1, survivalProbability)
                 if nbAttackedSpeciesSurvivors == 0:
-                    self.fightResult['winningSpecies'] = constants.EMPTY
+                    self.fightResult['winningSpecies'] = str(constants.EMPTY)
                     self.fightResult['nbWinningSpecies'] = 0
                     return self.fightResult
-                self.fightResult['winningSpecies'] = self.attackedSpecies
-                self.fightResult['nbWinningSpecies'] = nbAttackedSpeciesSurvivors
+                self.fightResult['winningSpecies'] = str(self.attackedSpecies)
+                self.fightResult['nbWinningSpecies'] = int(nbAttackedSpeciesSurvivors)
                 return self.fightResult
 
     def fightOrMerge(self):
         if self.attackedSpecies == self.attackingSpecies:
-            self.fightResult['winningSpecies'] = self.attackingSpecies
-            self.fightResult['nbWinningSpecies'] = self.nbAttackingSpecies + self.nbAttackedSpecies
+            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+            self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies + self.nbAttackedSpecies)
             return self.fightResult
         if self.attackedSpecies == constants.EMPTY:
-            self.fightResult['winningSpecies'] = self.attackingSpecies
-            self.fightResult['nbWinningSpecies'] = self.nbAttackingSpecies
+            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+            self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies)
             return self.fightResult
         elif self.attackedSpecies == constants.HUMAN:
             return self.fightVsHuman()
         else:
             return self.fightVsMonsters()
-
-
-class Grid:
-    'Common base class for all employees'
-    xGridSize = 15
-    yGridSize = 15
-
-    def __init__(self, xGridSize, yGridSize):
-        print("Instantiating new grid")
-        self.xGridSize = xGridSize
-        self.yGridSize = yGridSize
-
-
-class Square:
-    def __init__(self, species, nb, x, y, case_id):
-        self.species = species
-        self.nb = nb
-        self.x = x
-        self.y = y
-        self.index = int(str(x)+str(y))
-
-    def __repr__(self):
-        return str([self.species, self.nb, self.x, self.y, self.index])

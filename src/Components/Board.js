@@ -130,14 +130,24 @@ class Board extends Component {
   }
 
   sendAllUpdatedData = () => {
-    const component = this
-    const dataToSend = _.filter(this.state.currentData, function (o) { return o !== undefined; });
-    return Promise.all(_.forEach(dataToSend, function (data) {
-      return component.sendUpdatedData(data);
-    }))
+    const component = this;
+    const squares = _.filter(this.state.currentData, function (o) { return o !== undefined; });
+    return this.fetchPlayerTurn()
+    .then((playerPlaying) => {
+      const data = {};
+      data.species = Constants.revertDictSpecies[playerPlaying.turn];
+      data.squares = squares;
+      return fetch('http://localhost:5000/api/square', {
+        method: 'post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+    })
     .then(() => {
-      // return this.getNewBoard()
-      return this.changePlayerTurn();
+      return component.changePlayerTurn();
     });
   }
 

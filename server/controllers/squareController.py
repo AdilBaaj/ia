@@ -1,10 +1,21 @@
 from flask_restful import Resource
 from flask_restful import reqparse
+from flask import abort
 from game.fight import Game
+from game.check_authorized_movement import check_if_authorized_movement
 from game import constants
 
 
 class SquareController(Resource):
+
+    def get_fight_result(self, xAttackedSquare, yAttackedSquare, nbAttackingSpecies, attackingSpecies, attackedSquare):
+        is_movement_authorized = check_if_authorized_movement(nbAttackingSpecies, attackingSpecies, attackedSquare)
+        if is_movement_authorized:
+            game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
+            fightResult = game.fightOrMerge()
+            return fightResult['winningSpecies'], fightResult['nbWinningSpecies']
+        else:
+            abort(401, {'message': 'Movement not authorized'})
 
     def get(self):
         from models import Square
@@ -40,18 +51,15 @@ class SquareController(Resource):
             attackedSquare = db.session.query(Square).\
                 filter(Square.x == xAttackedSquare).\
                 filter(Square.y == yAttackedSquare).first()
-            if attackedSquare is None:
-                attackedSquare = {}
-                attackedSquare['species'] = constants.EMPTY
-                attackedSquare['nb'] = 0
 
-            game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
-            fightResult = game.fightOrMerge()
-            square = Square(xAttackedSquare, yAttackedSquare, fightResult['nbWinningSpecies'], fightResult['winningSpecies'])
-
-            if attackedSquare is not None:
-                db.session.delete(attackedSquare)
-            db.session.add(square)
+            attackedSquare.species, attackedSquare.nb = self.get_fight_result(
+                xAttackedSquare,
+                yAttackedSquare,
+                nbAttackingSpecies,
+                attackingSpecies,
+                attackedSquare
+            )
+            db.session.commit()
             return {'x': args['x'], 'y': args['y'], 'nb': args['nb'], 'species': args['species']}
 
         except Exception as e:
