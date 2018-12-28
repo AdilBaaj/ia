@@ -10,7 +10,7 @@ Flask-RESTful==0.3.5
 SQLAlchemy==1.1.2
 Flask-SQLAlchemy==2.1
 
-flask-marshmallow==2.13.2
+flask-marshmallow
 marshmallow-sqlalchemy==0.13.0
 
 itsdangerous==0.24

@@ -36,4 +36,4 @@ dist
 .idea
 
 # Local database
-server/static/db/test.db
+server/static/*
