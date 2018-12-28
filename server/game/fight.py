@@ -76,15 +76,19 @@ class Game:
                 return self.fightResult
 
     def fightOrMerge(self):
-        if self.attackedSpecies == self.attackingSpecies:
-            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
-            self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies + self.nbAttackedSpecies)
-            return self.fightResult
-        if self.attackedSpecies == constants.EMPTY:
-            self.fightResult['winningSpecies'] = str(self.attackingSpecies)
-            self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies)
-            return self.fightResult
-        elif self.attackedSpecies == constants.HUMAN:
-            return self.fightVsHuman()
-        else:
-            return self.fightVsMonsters()
+        return {
+          'winningSpecies': self.attackingSpecies,
+          'nbWinningSpecies': self.nbAttackingSpecies
+        }
+        # if self.attackedSpecies == self.attackingSpecies:
+        #     self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+        #     self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies + self.nbAttackedSpecies)
+        #     return self.fightResult
+        # if self.attackedSpecies == constants.EMPTY:
+        #     self.fightResult['winningSpecies'] = str(self.attackingSpecies)
+        #     self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies)
+        #     return self.fightResult
+        # elif self.attackedSpecies == constants.HUMAN:
+        #     return self.fightVsHuman()
+        # else:
+        #     return self.fightVsMonsters()

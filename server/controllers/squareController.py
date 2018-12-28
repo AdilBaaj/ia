@@ -8,8 +8,9 @@ import json
 
 class SquareController(Resource):
 
-    def get_fight_result(self, xAttackedSquare, yAttackedSquare, nbAttackingSpecies, attackingSpecies, attackedSquare):
-        is_movement_authorized = check_if_authorized_movement(nbAttackingSpecies, attackingSpecies, attackedSquare)
+    def get_fight_result(self, nbAttackingSpecies, attackingSpecies, attackedSquare):
+        # is_movement_authorized = check_if_authorized_movement(nbAttackingSpecies, attackingSpecies, attackedSquare)
+        is_movement_authorized = True
         if is_movement_authorized:
             game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
             fightResult = game.fightOrMerge()
@@ -54,14 +55,12 @@ class SquareController(Resource):
                     filter(Square.y == y_attacked_square).first()
 
                 attacked_square.species, attacked_square.nb = self.get_fight_result(
-                    x_attacked_square,
-                    y_attacked_square,
                     nb_attacking_species,
                     attacking_species,
                     attacked_square
                 )
-                db.session.commit()
-                return {'x': args['x'], 'y': args['y'], 'nb': args['nb'], 'species': args['species']}
+            db.session.commit()
+            return 'Success'
 
         except Exception as e:
             db.session.rollback()

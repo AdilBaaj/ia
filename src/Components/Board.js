@@ -113,8 +113,14 @@ class Board extends Component {
       });
     })
     .then(() => {
+      component.resetCurrentData()
       return component.changePlayerTurn();
     });
+  }
+
+  resetCurrentData = () => {
+    const component = this;
+    component.state.currentData = new Array(Constants.boardWidth * Constants.boardHeight)
   }
 
   render() {
