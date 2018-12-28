@@ -7,7 +7,7 @@ class Game:
     attackedSpecies = constants.EMPTY
     nbAttackingSpecies = 0
     nbAttackedSpecies = 0
-    fightResult = {}
+    fightResult = {} # TODO: refactor into a class
 
     def __init__(self, attackingSpecies, attackedSpecies, nbAttackingSpecies, nbAttackedSpecies):
         self.attackingSpecies = int(attackingSpecies)

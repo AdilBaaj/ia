@@ -49,10 +49,18 @@ const path = require('path');
 
 module.exports = {
   entry: [
-    'webpack-dev-server/client?http://localhost:8080',
+    'webpack-dev-server/client?http://0.0.0.0:0',
     'webpack/hot/dev-server',
     './src/index'
   ],
+  devServer: {
+    contentBase: './src/',
+    historyApiFallback: true,
+    hot: true,
+    noInfo: false,
+    port: 80,
+    publicPath: '/',
+  },
   output: {
     path: __dirname,
     filename: 'bundle.js',

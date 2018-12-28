@@ -12,10 +12,6 @@
  * 'resolve'
  * Array of file extensions used to resolve modules.
  *
- * devtool: 'eval-source-map'
- * http://www.cnblogs.com/Answer1215/p/4312265.html
- * The source map file will only be downloaded if you have source maps enabled
- * and your dev tools open.
  *
  * OccurrenceOrderPlugin
  * Assign the module and chunk ids by occurrence count. Ids that are used often
@@ -48,11 +44,11 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
-  entry: './scripts/index',
+  entry: './src/index',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: './src/static'
   },
   resolve: {
     extensions: ['', '.js']
@@ -76,7 +72,10 @@ module.exports = {
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
-        include: path.join(__dirname, 'scripts')
+        include: path.join(__dirname, 'src')
+      },
+      { test: /\.css$/,
+        loader: 'style-loader!css-loader'
       }
     ]
   }

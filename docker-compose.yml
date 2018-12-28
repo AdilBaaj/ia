@@ -1,0 +1,25 @@
+proxy:
+  image: nginx:1.7
+  ports:
+   - '8085:80'
+  links:
+   - server
+   - client
+  volumes:
+   - ./devops/:/etc/nginx/conf.d/
+
+server:
+  build: server/.
+  ports:
+   - '5000:5000'
+  volumes:
+   - ./server/:/var/www/ia
+  command: python3 /var/www/ia/api.py
+
+client:
+  build: .
+  ports:
+   - '8080:80'
+  volumes:
+   - ./:/var/www/client
+  command: yarn start

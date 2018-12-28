@@ -35,7 +35,7 @@ export default class Square extends Component {
     let backgroundColor = '#52527a';
 
     if (this.props.data && this.props.data.species) {
-      const species = Constants.species[this.props.data.species];
+      const species = Constants.idToSpecies[this.props.data.species];
       if (species === 'VAMPIRE') {
         backgroundColor = Constants.vampiresColor;
       } else if (species === 'WEREWOLF') {

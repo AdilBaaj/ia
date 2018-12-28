@@ -6,11 +6,9 @@ import simplejson as json
 
 class PartyController(Resource):
 
-    def get(self):
-        return {"response": "hello get"}
-
     # Creates a new board
-    def post(self):
+    @staticmethod
+    def post():
         from api import db
         from models import Square
         from game import constants

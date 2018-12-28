@@ -19,7 +19,13 @@ class Board extends Component {
     const squares = [];
     const boardSize = Constants.boardWidth * Constants.boardHeight;
     for (let i = 0; i < boardSize; i++) {
-      squares.push(this.renderSquare(i));
+      squares.push(
+        <div key={i}>
+          <Square
+            sendData={this.getUpdatedSquareData}
+          />
+        </div>
+      );
     }
     this.setState({ squares });
     this.getNewBoard();
@@ -28,14 +34,13 @@ class Board extends Component {
 
 
   getNewBoard = () => {
-    return this.fetchData().then(() => {
+    this.fetchData().then(() => {
       const squares = [];
       const boardSize = Constants.boardWidth * Constants.boardHeight;
       for (let i = 0; i < boardSize; i++) {
         squares.push(this.renderSquare(i));
       }
       this.setState({ squares });
-      return 'OK';
     });
   }
 
@@ -44,14 +49,9 @@ class Board extends Component {
     this.state.currentData[index] = squareData;
   }
 
-  sleep = (ms) => {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
 
   fetchData = () => {
-    return fetch('http://localhost:5000/api/square')
+    return fetch('http://localhost:8085/api/square')
     .then((response) => {
       return response.json();
     })
@@ -62,7 +62,7 @@ class Board extends Component {
   }
 
   changePlayerTurn = () => {
-    return fetch('http://localhost:5000/api/turn', {
+    return fetch('http://localhost:8085/api/turn', {
       method: 'put',
       headers: {
         Accept: 'application/json',
@@ -78,55 +78,21 @@ class Board extends Component {
   }
 
   fetchPlayerTurn = () => {
-    return fetch('http://localhost:5000/api/turn')
+    return fetch('http://localhost:8085/api/turn')
     .then(response => response.json())
     .then((json) => {
-      this.setState({ playerTurn: json.turn });
+      this.setState({ playerTurn: json.turn } );
       return json;
     });
   }
 
-  renderSquare(i) {
-    const black = (i % 2 === 0);
-    const squares = this.state.data;
-    for (let j = 0; j < squares.length; j++) {
-      const square = squares[j];
-      if (square !== undefined && square.x === (i % 15) && square.y === Math.floor(i / 15)) {
-        return (
-          <div key={i}>
-            <Square
-              black={black}
-              data={square}
-              sendData={this.getUpdatedSquareData}
-            />
-          </div>
-        );
-      }
-    }
-    return (
-      <div key={i}>
-        <Square
-          black={black}
-          sendData={this.getUpdatedSquareData}
-        />
-      </div>
-    );
-  }
-
-  sendUpdatedData = (data) => {
-    // const myHeaders = new Headers();
-    return this.fetchPlayerTurn()
-    .then((playerPlaying) => {
-      data.species = Constants.revertDictSpecies[playerPlaying.turn];
-      return fetch('http://localhost:5000/api/square', {
-        method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-    });
+  renderSquare = (i) => {
+    return (<div key={i}>
+      <Square
+        data={this.state.data[i]}
+        sendData={this.getUpdatedSquareData}
+      />
+    </div>);
   }
 
   sendAllUpdatedData = () => {
@@ -135,9 +101,9 @@ class Board extends Component {
     return this.fetchPlayerTurn()
     .then((playerPlaying) => {
       const data = {};
-      data.species = Constants.revertDictSpecies[playerPlaying.turn];
+      data.species = Constants.speciesToId[playerPlaying.turn];
       data.squares = squares;
-      return fetch('http://localhost:5000/api/square', {
+      return fetch('http://localhost:8085/api/square', {
         method: 'post',
         headers: {
           Accept: 'application/json',

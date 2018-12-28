@@ -3,7 +3,7 @@ from flask_restful import reqparse
 from flask import abort
 from game.fight import Game
 from game.check_authorized_movement import check_if_authorized_movement
-from game import constants
+import json
 
 
 class SquareController(Resource):
@@ -33,41 +33,36 @@ class SquareController(Resource):
 
     def post(self):
         from api import db
-        from models import Square, PlayerTurn
+        from models import Square
         try:
             # Parse the arguments
             parser = reqparse.RequestParser()
-            parser.add_argument('x', type=str, help='x')
-            parser.add_argument('y', type=str, help='y')
-            parser.add_argument('nb', type=str, help='Number')
-            parser.add_argument('species', type=str, help='Species')
-
+            parser.add_argument('squares', action='append')
+            parser.add_argument('species')
             args = parser.parse_args()
-            xAttackedSquare = args['x']
-            yAttackedSquare = args['y']
-            nbAttackingSpecies = args['nb']
-            attackingSpecies = args['species']
+            attacked_squares = args['squares']
+            attacking_species = args['species']
+            for i in range(len(attacked_squares)):
+                square = attacked_squares[i]
+                square = json.loads(square.replace("'", '"'))
+                x_attacked_square = square['x']
+                y_attacked_square = square['y']
+                nb_attacking_species = square['nb']
 
-            attackedSquare = db.session.query(Square).\
-                filter(Square.x == xAttackedSquare).\
-                filter(Square.y == yAttackedSquare).first()
+                attacked_square = db.session.query(Square).\
+                    filter(Square.x == x_attacked_square).\
+                    filter(Square.y == y_attacked_square).first()
 
-            attackedSquare.species, attackedSquare.nb = self.get_fight_result(
-                xAttackedSquare,
-                yAttackedSquare,
-                nbAttackingSpecies,
-                attackingSpecies,
-                attackedSquare
-            )
-            db.session.commit()
-            return {'x': args['x'], 'y': args['y'], 'nb': args['nb'], 'species': args['species']}
+                attacked_square.species, attacked_square.nb = self.get_fight_result(
+                    x_attacked_square,
+                    y_attacked_square,
+                    nb_attacking_species,
+                    attacking_species,
+                    attacked_square
+                )
+                db.session.commit()
+                return {'x': args['x'], 'y': args['y'], 'nb': args['nb'], 'species': args['species']}
 
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}
-
-    def put(self):
-        return {"response": "hello put"}
-
-    def delete(self):
-        return {"response": "hello delete"}

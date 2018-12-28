@@ -1,5 +1,4 @@
 def get_surrounding_squares_with_species(attacked_square, attacking_species):
-  from api import db
   from models import Square
   x, y = (attacked_square.x, attacked_square.y)
   return Square.query. \

@@ -34,3 +34,6 @@ node_modules
 dist
 
 .idea
+
+# Local database
+server/static/db/test.db
