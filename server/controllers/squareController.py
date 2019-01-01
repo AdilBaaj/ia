@@ -8,7 +8,8 @@ import json
 
 class SquareController(Resource):
 
-    def get_fight_result(self, nbAttackingSpecies, attackingSpecies, attackedSquare):
+    @staticmethod
+    def get_fight_result(nbAttackingSpecies, attackingSpecies, attackedSquare):
         # is_movement_authorized = check_if_authorized_movement(nbAttackingSpecies, attackingSpecies, attackedSquare)
         is_movement_authorized = True
         if is_movement_authorized:
@@ -18,19 +19,20 @@ class SquareController(Resource):
         else:
             abort(401, {'message': 'Movement not authorized'})
 
-    def get(self):
+    @staticmethod
+    def get():
         from models import Square
         squares = Square.query.all()
-        hydratedSquares = []
+        hydrated_squares = []
         for square in squares:
-            hydratedSquare = {
+            hydrated_squares = {
                 'x': square.x,
                 'y': square.y,
                 'nb': square.nb,
                 'species': square.species
             }
-            hydratedSquares.append(hydratedSquare)
-        return hydratedSquares
+            hydrated_squares.append(hydrated_squares)
+        return hydrated_squares
 
     def post(self):
         from api import db
@@ -39,7 +41,6 @@ class SquareController(Resource):
             # Parse the arguments
             parser = reqparse.RequestParser()
             parser.add_argument('squares', action='append')
-            parser.add_argument('species')
             args = parser.parse_args()
             attacked_squares = args['squares']
             attacking_species = args['species']

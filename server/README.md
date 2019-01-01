@@ -1,5 +1,3 @@
-source venv/bin/activate
-
 ### SQL alchemy commands:
 
 Get all elements of a model

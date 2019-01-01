@@ -1,16 +1,19 @@
 from flask import Flask
 from flask_restful import Api
-from controllers import squareController, partyController, playerTurnController
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+from controllers import squareController, partyController, playerTurnController
 
 app = Flask(__name__)
+app.config.from_pyfile('./flask_config.py')
 
 api = Api(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///static/db/test.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
 db = SQLAlchemy(app)
+
+from models import *
+migrate = Migrate(app, db)
+
 
 api.add_resource(squareController.SquareController, '/api/square')
 api.add_resource(partyController.PartyController, '/api/party')

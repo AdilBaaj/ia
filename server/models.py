@@ -3,11 +3,18 @@ import game.constants as constants
 
 
 class Square(db.Model):
+
+    class Species(db.Enum):
+        vampire = 'VAMPIRE'
+        werewolf = 'WEREWOLF'
+        human = 'HUMAN'
+        empty = 'EMPTY'
+
     id = db.Column(db.Integer, primary_key=True)
     x = db.Column(db.Integer, nullable=False, default=1)
     y = db.Column(db.Integer, nullable=False, default=1)
     nb = db.Column(db.Integer, nullable=True, default=0)
-    species = db.Column(db.Integer, nullable=False, default=0)
+    species = db.Column(Species(name='species_values'), nullable=False, default=Species.empty)
 
     def __init__(self, x, y, nb, species):
         self.x = x
@@ -35,8 +42,3 @@ class PlayerTurn(db.Model):
             return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.VAMPIRE)])
         else:
             return '<{} turn>'.format(constants.MAP_SPECIES[int(constants.WEREWOLF)])
-
-
-if __name__ == '__main__':
-    db.create_all()
-    db.session.commit()

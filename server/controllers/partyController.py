@@ -26,9 +26,3 @@ class PartyController(Resource):
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}
-
-    def put(self):
-        return {"response": "hello put"}
-
-    def delete(self):
-        return {"response": "hello delete"}

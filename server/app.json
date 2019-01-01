@@ -1,6 +1,0 @@
-{
-  "name": "Vampires vs Werewolves",
-  "description": "A Flask Restful app",
-  "repository": "https://github.com/smitthakkar96/flask-restful-boilerplate",
-  "keywords": ["Flask", "Python", "Rest API"]
-}

@@ -35,5 +35,5 @@ dist
 
 .idea
 
-# Local database
-server/static/*
+# Persistent postgres data volume
+postgres-data/*

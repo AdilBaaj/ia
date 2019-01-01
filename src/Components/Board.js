@@ -4,62 +4,90 @@ import Square from './Square';
 import * as Constants from './Constants';
 import './Board.css';
 
+
 class Board extends Component {
   constructor(props) {
     super(props);
     this.state = {
       squares: [],
-      data: [],
-      currentData: new Array(Constants.boardWidth * Constants.boardHeight),
-      turn: ''
+      modifiedSquares: [],
+      turn: undefined
     };
   }
+
 
   componentWillMount() {
     const squares = [];
     const boardSize = Constants.boardWidth * Constants.boardHeight;
-    for (let i = 0; i < boardSize; i++) {
-      squares.push(
-        <div key={i}>
-          <Square
-            sendData={this.getUpdatedSquareData}
-          />
-        </div>
-      );
-    }
-    this.setState({ squares });
-    this.getNewBoard();
-    this.fetchPlayerTurn();
+
+    // Querying data from api
+    this.displayInitialBoard().then(() => {
+      this.fetchPlayerTurn();
+    })
   }
 
 
-  getNewBoard = () => {
-    this.fetchData().then(() => {
+  displayInitialBoard = () => {
+    return this.fetchInitialBoardState().then(() => {
       const squares = [];
       const boardSize = Constants.boardWidth * Constants.boardHeight;
       for (let i = 0; i < boardSize; i++) {
         squares.push(this.renderSquare(i));
       }
       this.setState({ squares });
-    });
+    })
   }
+
 
   getUpdatedSquareData = (squareData) => {
-    const index = squareData.x + (squareData.y * 15);
-    this.state.currentData[index] = squareData;
+    if (squareData && squareData.nb) {
+      this.setState({
+        modifiedSquares : this.state.modifiedSquares.concat(squareData)
+      });
+    }
   }
 
 
-  fetchData = () => {
+  // TODO : put within a saga
+  fetchInitialBoardState = () => {
     return fetch('http://localhost:8085/api/square')
     .then((response) => {
       return response.json();
     })
-    .then((json) => {
-      this.setState({ data: json });
-      return json;
+    .then((updatedSquares) => {
+      squares = this.state.squares
+      for (square in updatedSquares) {
+        const index = computeIndexFromCoordinates(square.x, square.y)
+        squares[index] = square
+      }
+      this.setState({ squares });
     });
   }
+
+
+  // TODO : put in utils
+  computeIndexFromCoordinates = (x, y) => {
+    return squareData.x + (squareData.y * Constants.boardWidth);
+  }
+
+
+  updateSquare = (index, updatedSquare) => {
+    square = this.state.squares[index]
+    square.nb = updatedSquare.nb
+    square.species = data.species
+    return square
+  }
+
+
+  updateSquares = (listUpdatedSquares) => {
+    squares = this.state.squares
+    for(updatedSquare in listUpdatedSquares){
+      index = this.computeIndexFromCoordinates(updatedSquare.x, updatedSquare.y)
+      squares[index] = this.updateSquare(index, v)
+    }
+    this.setState({ squares });
+  }
+
 
   changePlayerTurn = () => {
     return fetch('http://localhost:8085/api/turn', {
@@ -73,9 +101,9 @@ class Board extends Component {
     .then(response => response.json())
     .then((json) => {
       this.setState({ turn: json.turn });
-      return this.state.turn;
     });
   }
+
 
   fetchPlayerTurn = () => {
     return fetch('http://localhost:8085/api/turn')
@@ -86,42 +114,34 @@ class Board extends Component {
     });
   }
 
-  renderSquare = (i) => {
-    return (<div key={i}>
+
+  renderSquare = (squareIndex) => {
+    return (<div key={squareIndex}>
       <Square
-        data={this.state.data[i]}
+        data={this.state.data[squareIndex]}
         sendData={this.getUpdatedSquareData}
       />
     </div>);
   }
 
-  sendAllUpdatedData = () => {
+  computeAndDisplayNewBoard = () => {
     const component = this;
-    const squares = _.filter(this.state.currentData, function (o) { return o !== undefined; });
-    return this.fetchPlayerTurn()
-    .then((playerPlaying) => {
-      const data = {};
-      data.species = Constants.speciesToId[playerPlaying.turn];
-      data.squares = squares;
-      return fetch('http://localhost:8085/api/square', {
-        method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-    })
-    .then(() => {
-      component.resetCurrentData()
-      return component.changePlayerTurn();
+    const data = {};
+    data.squares = squares;
+    fetch('http://localhost:8085/api/square', {
+      method: 'post',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then((listOfUpdatedSquares) => {
+      component.updateSquares(listOfUpdatedSquares)
+      component.setState({ modifiedSquares: [] })
+      component.changePlayerTurn();
     });
   }
 
-  resetCurrentData = () => {
-    const component = this;
-    component.state.currentData = new Array(Constants.boardWidth * Constants.boardHeight)
-  }
 
   render() {
     let boardWidth = Constants.boardWidth * (Constants.squareSideLength + (Constants.squareBorderWidth * 2));
@@ -132,16 +152,10 @@ class Board extends Component {
       <div>
         <div className="buttons">
           <button
-            onClick={this.getNewBoard}
-            className="request-data-button"
-          >
-            {'Request new board state'}
-          </button>
-          <button
-            onClick={this.sendAllUpdatedData}
+            onClick={this.computeAndDisplayNewBoard}
             className="send-data-button"
           >
-            {'Send data'}
+            {'Compute new board state'}
           </button>
         </div>
         <div
