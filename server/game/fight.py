@@ -1,20 +1,20 @@
-import game.constants as constants
 from numpy.random import binomial
+from game.constants import Species
 
 
 class Game:
-    attackingSpecies = constants.EMPTY
-    attackedSpecies = constants.EMPTY
+    attackingSpecies = Species.EMPTY
+    attackedSpecies = Species.EMPTY
     nbAttackingSpecies = 0
     nbAttackedSpecies = 0
-    fightResult = {} # TODO: refactor into a class
+    fightResult = {}  # TODO: refactor into a class
 
-    def __init__(self, attackingSpecies, attackedSpecies, nbAttackingSpecies, nbAttackedSpecies):
-        self.attackingSpecies = int(attackingSpecies)
-        self.nbAttackingSpecies = float(nbAttackingSpecies)
-        if attackedSpecies is not None:
-            self.attackedSpecies = int(attackedSpecies)
-            self.nbAttackedSpecies = float(nbAttackedSpecies)
+    def __init__(self, attacking_species, attacked_species, nb_attacking_species, nb_attacked_species):
+        self.attackingSpecies = attacking_species
+        self.nbAttackingSpecies = int(nb_attacking_species)
+        if attacked_species is not None:
+            self.attackedSpecies = attacked_species
+            self.nbAttackedSpecies = int(nb_attacked_species)
 
     def fightVsHuman(self):
         if self.nbAttackedSpecies < self.nbAttackingSpecies:
@@ -56,7 +56,7 @@ class Game:
                 for i in range(int(self.nbAttackingSpecies)):
                     nbAttackingSpeciesSurvivors += binomial(1, winProbability)
                 if nbAttackingSpeciesSurvivors == 0:
-                    self.fightResult['winningSpecies'] = constants.EMPTY
+                    self.fightResult['winningSpecies'] = Species.EMPTY
                     self.fightResult['nbWinningSpecies'] = 0
                     return self.fightResult
                 self.fightResult['winningSpecies'] = str(self.attackingSpecies)
@@ -68,7 +68,7 @@ class Game:
                 for i in range(int(self.nbAttackedSpecies)):
                     nbAttackedSpeciesSurvivors += binomial(1, survivalProbability)
                 if nbAttackedSpeciesSurvivors == 0:
-                    self.fightResult['winningSpecies'] = str(constants.EMPTY)
+                    self.fightResult['winningSpecies'] = Species.EMPTY
                     self.fightResult['nbWinningSpecies'] = 0
                     return self.fightResult
                 self.fightResult['winningSpecies'] = str(self.attackedSpecies)
@@ -84,11 +84,11 @@ class Game:
         #     self.fightResult['winningSpecies'] = str(self.attackingSpecies)
         #     self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies + self.nbAttackedSpecies)
         #     return self.fightResult
-        # if self.attackedSpecies == constants.EMPTY:
+        # if self.attackedSpecies == Square.Species.EMPTY:
         #     self.fightResult['winningSpecies'] = str(self.attackingSpecies)
         #     self.fightResult['nbWinningSpecies'] = int(self.nbAttackingSpecies)
         #     return self.fightResult
-        # elif self.attackedSpecies == constants.HUMAN:
+        # elif self.attackedSpecies == Square.Species.HUMAN:
         #     return self.fightVsHuman()
         # else:
         #     return self.fightVsMonsters()

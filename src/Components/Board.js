@@ -9,7 +9,7 @@ class Board extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: [],
+      squares: new Array(Constants.boardWidth * Constants.boardHeight),
       modifiedSquares: [],
       turn: undefined
     };
@@ -28,13 +28,13 @@ class Board extends Component {
 
 
   displayInitialBoard = () => {
-    return this.fetchInitialBoardState().then(() => {
-      const squares = [];
-      const boardSize = Constants.boardWidth * Constants.boardHeight;
-      for (let i = 0; i < boardSize; i++) {
-        squares.push(this.renderSquare(i));
+    return this.fetchBoardState().then((listSquareData) => {
+      listSquareData = listSquareData.sort(this.compareSquareOrder)
+      const squares = []
+      for (var i=0; i <  listSquareData.length; i++) {
+        squares.push(this.renderSquare(listSquareData[i]));
       }
-      this.setState({ squares });
+      this.setState({ squares: squares.sort(this.compareSquareOrder) });
     })
   }
 
@@ -49,41 +49,39 @@ class Board extends Component {
 
 
   // TODO : put within a saga
-  fetchInitialBoardState = () => {
+  fetchBoardState = () => {
     return fetch('http://localhost:8085/api/square')
     .then((response) => {
       return response.json();
     })
-    .then((updatedSquares) => {
-      squares = this.state.squares
-      for (square in updatedSquares) {
-        const index = computeIndexFromCoordinates(square.x, square.y)
-        squares[index] = square
-      }
-      this.setState({ squares });
-    });
   }
 
 
   // TODO : put in utils
   computeIndexFromCoordinates = (x, y) => {
-    return squareData.x + (squareData.y * Constants.boardWidth);
+    return (x * Constants.boardHeight) + y;
+  }
+
+
+  // TODO : put in utils
+  compareSquareOrder = (a, b) => {
+    return this.computeIndexFromCoordinates(a.x, a.y) - this.computeIndexFromCoordinates(b.x, b.y)
   }
 
 
   updateSquare = (index, updatedSquare) => {
-    square = this.state.squares[index]
+    let square = this.state.squares[index]
     square.nb = updatedSquare.nb
-    square.species = data.species
+    square.species = data.species // data not defined
     return square
   }
 
 
   updateSquares = (listUpdatedSquares) => {
-    squares = this.state.squares
-    for(updatedSquare in listUpdatedSquares){
+    let squares = this.state.squares
+    for(let updatedSquare in listUpdatedSquares){ // Fix loop
       index = this.computeIndexFromCoordinates(updatedSquare.x, updatedSquare.y)
-      squares[index] = this.updateSquare(index, v)
+      squares[index] = this.updateSquare(index, v) // Fix second argument
     }
     this.setState({ squares });
   }
@@ -115,10 +113,11 @@ class Board extends Component {
   }
 
 
-  renderSquare = (squareIndex) => {
+  renderSquare = (squareData) => {
+    const squareIndex = this.computeIndexFromCoordinates(squareData.x, squareData.y)
     return (<div key={squareIndex}>
       <Square
-        data={this.state.data[squareIndex]}
+        data={squareData}
         sendData={this.getUpdatedSquareData}
       />
     </div>);

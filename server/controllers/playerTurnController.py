@@ -1,8 +1,5 @@
 from flask_restful import Resource
-from flask_restful import reqparse
-from game.fight import Game
-from game import constants
-import simplejson as json
+from game.constants import Species
 
 
 class PlayerTurnController(Resource):
@@ -10,14 +7,13 @@ class PlayerTurnController(Resource):
     def get(self):
         from api import db
         from models import PlayerTurn
-        from game import constants
 
         try:
             player = db.session.query(PlayerTurn).first()
             if player.turn:
-                return {'turn': constants.MAP_SPECIES[int(constants.VAMPIRE)]}
+                return {'turn': Species.VAMPIRE}
             else:
-                return {'turn': constants.MAP_SPECIES[int(constants.WEREWOLF)]}
+                return {'turn': Species.WEREWOLF}
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}
@@ -25,22 +21,15 @@ class PlayerTurnController(Resource):
     def put(self):
         from api import db
         from models import PlayerTurn
-        from game import constants
 
         try:
             player = db.session.query(PlayerTurn).first()
             player.turn = not player.turn
             db.session.commit()
             if player.turn:
-                return {'turn': constants.MAP_SPECIES[int(constants.VAMPIRE)]}
+                return {'turn': Species.VAMPIRE}
             else:
-                return {'turn': constants.MAP_SPECIES[int(constants.WEREWOLF)]}
+                return {'turn': Species.WEREWOLF}
         except Exception as e:
             db.session.rollback()
             return {'error': str(e)}
-
-    def post(self):
-        return {"response": "hello post"}
-
-    def delete(self):
-        return {"response": "hello delete"}

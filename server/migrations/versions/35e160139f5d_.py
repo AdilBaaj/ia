@@ -1,17 +1,16 @@
 """empty message
 
-Revision ID: 2ddcf39e4d17
-Revises:
-Create Date: 2018-12-31 19:03:37.288837
+Revision ID: 35e160139f5d
+Revises: 
+Create Date: 2019-01-06 14:03:52.355946
 
 """
 from alembic import op
 import sqlalchemy as sa
-import models
 
 
 # revision identifiers, used by Alembic.
-revision = '2ddcf39e4d17'
+revision = '35e160139f5d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,7 +28,7 @@ def upgrade():
     sa.Column('x', sa.Integer(), nullable=False),
     sa.Column('y', sa.Integer(), nullable=False),
     sa.Column('nb', sa.Integer(), nullable=True),
-    sa.Column('species', models.Square.Species(name='species_values'), nullable=False),
+    sa.Column('species', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

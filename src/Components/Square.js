@@ -32,15 +32,15 @@ export default class Square extends Component {
   }
 
   render() {
-    let backgroundColor = '#52527a';
+    let backgroundColor;
 
     if (this.props.data && this.props.data.species) {
-      const species = Constants.idToSpecies[this.props.data.species];
-      if (species === 'VAMPIRE') {
+      const species = this.props.data.species;
+      if (species === Constants.species.VAMPIRE) {
         backgroundColor = Constants.vampiresColor;
-      } else if (species === 'WEREWOLF') {
+      } else if (species === Constants.species.WEREWOLF) {
         backgroundColor = Constants.werewolvesColor;
-      } else if (species === 'HUMAN') {
+      } else if (species === Constants.species.HUMAN) {
         backgroundColor = Constants.humanColor;
       } else {
         backgroundColor = Constants.emptyColor;
@@ -52,19 +52,21 @@ export default class Square extends Component {
       defaultValue = this.props.data.nb;
     }
 
+    let style = {
+      backgroundColor,
+      width: Constants.squareSideLength,
+      height: Constants.squareSideLength,
+      border: `${Constants.squareBorderWidth}px solid`,
+      padding: '0',
+      color: 'black'
+    }
+
     return (
       <div className="square">
         <input
           placeholder={defaultValue}
           value={this.state.value}
-          style={{
-            backgroundColor,
-            width: Constants.squareSideLength,
-            height: Constants.squareSideLength,
-            border: `${Constants.squareBorderWidth}px solid`,
-            padding: '0',
-            color: 'black',
-          }}
+          style={style}
           onChange={this.setValue}
         />
       </div>

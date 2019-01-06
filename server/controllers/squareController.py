@@ -2,20 +2,18 @@ from flask_restful import Resource
 from flask_restful import reqparse
 from flask import abort
 from game.fight import Game
-from game.check_authorized_movement import check_if_authorized_movement
 import json
 
 
 class SquareController(Resource):
 
     @staticmethod
-    def get_fight_result(nbAttackingSpecies, attackingSpecies, attackedSquare):
-        # is_movement_authorized = check_if_authorized_movement(nbAttackingSpecies, attackingSpecies, attackedSquare)
+    def get_fight_result(nb_attacking_species, attacking_species, attacked_square):
         is_movement_authorized = True
         if is_movement_authorized:
-            game = Game(attackingSpecies, attackedSquare.species, nbAttackingSpecies, attackedSquare.nb)
-            fightResult = game.fightOrMerge()
-            return fightResult['winningSpecies'], fightResult['nbWinningSpecies']
+            game = Game(attacking_species, attacked_square.species, nb_attacking_species, attacked_square.nb)
+            fight_result = game.fightOrMerge()
+            return fight_result['winningSpecies'], fight_result['nbWinningSpecies']
         else:
             abort(401, {'message': 'Movement not authorized'})
 
@@ -23,16 +21,16 @@ class SquareController(Resource):
     def get():
         from models import Square
         squares = Square.query.all()
-        hydrated_squares = []
+        list_dehydrated_squares = []
         for square in squares:
-            hydrated_squares = {
+            dehydrated_square = {
                 'x': square.x,
                 'y': square.y,
                 'nb': square.nb,
                 'species': square.species
             }
-            hydrated_squares.append(hydrated_squares)
-        return hydrated_squares
+            list_dehydrated_squares.append(dehydrated_square)
+        return list_dehydrated_squares
 
     def post(self):
         from api import db
