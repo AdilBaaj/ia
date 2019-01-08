@@ -26,7 +26,7 @@ class Square(db.Model):
 class PlayerTurn(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    turn = db.Column(db.Boolean, nullable=False, default=True)
+    turn = db.Column(db.String, nullable=False, default=Species.VAMPIRE)
 
     def __init__(self, turn):
         self.turn = turn
@@ -35,4 +35,4 @@ class PlayerTurn(db.Model):
         if self.turn:
             return '<{} turn>'.format(Species.VAMPIRE)
         else:
-            return '<{} turn>'.format(Species.VAMPIRE)
+            return '<{} turn>'.format(Species.WEREWOLF)

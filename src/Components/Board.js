@@ -72,18 +72,17 @@ class Board extends Component {
   updateSquare = (index, updatedSquare) => {
     let square = this.state.squares[index]
     square.nb = updatedSquare.nb
-    square.species = data.species // data not defined
-    return square
+    square.species = updatedSquare.species // data not defined
   }
 
 
   updateSquares = (listUpdatedSquares) => {
     let squares = this.state.squares
-    for(let updatedSquare in listUpdatedSquares){ // Fix loop
-      index = this.computeIndexFromCoordinates(updatedSquare.x, updatedSquare.y)
-      squares[index] = this.updateSquare(index, v) // Fix second argument
+    for(let i = 0; i < listUpdatedSquares.length; i++){ 
+      const updatedSquare = listUpdatedSquares[i]
+      const index = this.computeIndexFromCoordinates(updatedSquare.x, updatedSquare.y)
+      squares[index] = this.updateSquare(index, updatedSquare)
     }
-    this.setState({ squares });
   }
 
 
@@ -126,7 +125,7 @@ class Board extends Component {
   computeAndDisplayNewBoard = () => {
     const component = this;
     const data = {};
-    data.squares = squares;
+    data.squares = this.state.modifiedSquares;
     fetch('http://localhost:8085/api/square', {
       method: 'post',
       headers: {

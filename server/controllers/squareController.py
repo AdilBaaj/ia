@@ -34,24 +34,22 @@ class SquareController(Resource):
 
     def post(self):
         from api import db
-        from models import Square
+        from models import Square, PlayerTurn
         try:
             # Parse the arguments
             parser = reqparse.RequestParser()
             parser.add_argument('squares', action='append')
             args = parser.parse_args()
             attacked_squares = args['squares']
-            attacking_species = args['species']
+            attacking_species = db.sessions.query(PlayerTurn).first()
             for i in range(len(attacked_squares)):
                 square = attacked_squares[i]
                 square = json.loads(square.replace("'", '"'))
-                x_attacked_square = square['x']
-                y_attacked_square = square['y']
                 nb_attacking_species = square['nb']
 
                 attacked_square = db.session.query(Square).\
-                    filter(Square.x == x_attacked_square).\
-                    filter(Square.y == y_attacked_square).first()
+                    filter(Square.x == square['x']).\
+                    filter(Square.y == square['y']).first()
 
                 attacked_square.species, attacked_square.nb = self.get_fight_result(
                     nb_attacking_species,

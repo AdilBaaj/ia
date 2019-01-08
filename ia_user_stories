@@ -1,0 +1,8 @@
+IA :
+- ETQU je vois dans le front à qui est le tour
+- ETQU, quand je clique sur une case celle ci se met en surbrillance
+- ETQU, quand je clique sur une case qui ne m'appartient pas rien ne se passe
+- ETQU, quand je clique sur une case A qui m'appartient, puis que je clique sur une case B qui m'appartient, la case B se met en surbrillance et la case A n'est plus en surbrillance
+- ETQU quand je clique sur une case A qui m'appartient et que je clique sur une case B adjacente à la case A, une popup apparait avec un text input
+- ETQU quand je remplis le text input
+- Indiquer de quelle case vers quelle case on souhaite faire un déplacement

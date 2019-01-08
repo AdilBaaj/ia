@@ -7,7 +7,7 @@ class PartyController(Resource):
     # Creates a new board
     def post(self):
         from api import db
-        from models import Square
+        from models import Square, PlayerTurn
 
         try:
             db.session.query(Square).delete()
@@ -29,7 +29,10 @@ class PartyController(Resource):
 
             # Add a square with human
             self.update_square(7, 7, 10, Species.HUMAN)
-
+            
+            # Set player turn
+            turn = db.session.query(PlayerTurn).first()
+            turn =
             db.session.commit()
             return {'message': 'New board created'}
         except Exception as e:
